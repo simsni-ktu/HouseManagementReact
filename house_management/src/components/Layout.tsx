@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, Link } from "react-router-dom";
 
 const Layout = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  
   return (
     <>
       <nav>
