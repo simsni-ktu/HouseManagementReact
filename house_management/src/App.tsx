@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
-import Residences from "./pages/Residences";
-import Listings from "./pages/Listings";
-import MustLogin from "./pages/MustLogin";
+import Residences from "./pages/residences/Residences";
+import Listings from "./pages/listings/Listings";
+import { RequireAuth } from "react-auth-kit";
+import Residence from "./pages/residences/Residence";
+import AddResidence from "./pages/residences/AddResidence";
+import AddListing from "./pages/listings/AddListing";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
 
   return (
     <Routes>
@@ -17,11 +19,43 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route
           path="/residences"
-          element={isLoggedIn ? <Residences /> : <MustLogin />}
+          element={
+            <RequireAuth loginPath="/login">
+              <Residences />
+            </RequireAuth>
+          }
         />
         <Route
           path="/listings"
-          element={isLoggedIn ? <Listings /> : <MustLogin />}
+          element={
+            <RequireAuth loginPath="/login">
+              <Listings />
+            </RequireAuth>
+          }
+        />
+         <Route
+          path="/residences/:id"
+          element={
+            <RequireAuth loginPath="/login">
+              <Residence />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/residences/create"
+          element={
+            <RequireAuth loginPath="/login">
+              <AddResidence />
+            </RequireAuth>
+          }
+        />
+          <Route
+          path="/residences/:id/listings/create"
+          element={
+            <RequireAuth loginPath="/login">
+              <AddListing />
+            </RequireAuth>
+          }
         />
       </Route>
     </Routes>

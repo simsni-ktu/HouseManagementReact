@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
-import { Outlet, Link } from "react-router-dom";
+import {  useIsAuthenticated, useSignOut } from "react-auth-kit";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 
 const Layout = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  
+  const signOut = useSignOut();
+  const navigate = useNavigate()
+  const isAuthenticated = useIsAuthenticated()
+
+  const handleSignOut = () => {
+    signOut()
+    navigate("/login")
+  }
+
   return (
     <>
       <nav>
-      <ul className="flex flex-col sm:flex-row sm: items-center justify-evenly bg-slate-700 p-6 text-blue-200">
+        <ul className="flex flex-col sm:flex-row sm: items-center justify-evenly bg-slate-700 p-6 text-blue-200">
           <li>
             <Link to="/">Home</Link>
           </li>
@@ -18,13 +26,15 @@ const Layout = () => {
             <Link to="/listings">Listings</Link>
           </li>
           <li>
-            <Link
-              className={isLoggedIn ? "text-red-600" : ""}
-              to={isLoggedIn ? "/logout" : "/login"}
-            >
-              {isLoggedIn ? "Log out" : "Log in"}
-            </Link>
+            {isAuthenticated() ? (
+              <button className="text-red-600" onClick={handleSignOut}>
+                Log out
+              </button>
+            ) : (
+              <Link to="/login">Log in</Link>
+            )}
           </li>
+        
         </ul>
       </nav>
 

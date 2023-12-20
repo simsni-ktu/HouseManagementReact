@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 interface FormProps {
-  onSubmit: (name: String, password: String) => void;
+  onSubmit: (name: string, password: string) => void;
 }
 
 function useError() {
