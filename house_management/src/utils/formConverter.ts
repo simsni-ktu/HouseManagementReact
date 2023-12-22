@@ -1,3 +1,5 @@
+import { Comment } from "../models/comment";
+
 export function convertToResidence(userId: string, formInput: ResidenceForm): Residence {
     return {
       user_id: userId,
@@ -8,13 +10,21 @@ export function convertToResidence(userId: string, formInput: ResidenceForm): Re
       description: formInput.description,
     };
   }
+  
 
-  export function convertToListing(userId: string, residence_id: string, formInput: ListingForm): Listing {
+  export function convertToListing(userId: string, formInput: ListingForm): Listing {
     return {
       user_id: userId,
       price: formInput.price,
       fix_deadline: formInput.fix_deadline,
       description: formInput.description,
       issue_type: formInput.issue_type,
+    };
+  }
+ 
+  export function convertToComment(comment: string): Comment {
+    return {
+      user_id: "1",
+      comment_text: comment
     };
   }

@@ -1,8 +1,12 @@
+import { Link } from "react-router-dom";
 
-function ListingCard(listing: Listing) {
+function ListingCard(listing: Listing ) {
+  const listingPath = `/residences/${listing.residence_id}/listings/${listing.id}`;
+
   return (
+    <Link to={listingPath}>
     <li>
-      <div className="max-w-sm w-96 max-h-48 h-48 p-6  bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div className="flex flex-col max-h-48 w-56 h-48 p-6  bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
         <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           {listing.description}
         </h5>
@@ -29,6 +33,7 @@ function ListingCard(listing: Listing) {
         </div>
       </div>
     </li>
+    </Link>
   );
 }
 

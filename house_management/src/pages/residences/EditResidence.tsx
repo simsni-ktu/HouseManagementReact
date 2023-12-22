@@ -1,32 +1,42 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { IssueType } from "../../constants/enums/IssueType";
 import { Api } from "../../api/api";
-import { convertToListing } from "../../utils/formConverter";
+import { useEffect, useState } from "react";
+import {
+  convertToResidence,
+} from "../../utils/formConverter";
+import { useNavigate, useParams } from "react-router-dom";
 
-function AddListing() {
-  const { register, handleSubmit } = useForm<ListingForm>();
+
+
+function EditResidence() {
+  const { residence_id } = useParams();
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const { id } = useParams();
+  const { register, handleSubmit, setValue } = useForm<ResidenceForm>({});
 
-  console.log(id);
-
-  const onSubmit: SubmitHandler<ListingForm> = (data) => {
-    console.log(data);
-
-    console.log(convertToListing("1", data))
-
-    if (id !== undefined) {
-      setLoading(true);
-      Api.postListing(id, convertToListing("1", data)).then(() => {
-        setLoading(false);
-        navigate("/listings");
+  useEffect(() => {
+    if (residence_id !== undefined) {
+      Api.getResidence(residence_id).then((data) => {
+        setValue("city", data.city);
+        setValue("street", data.street);
+        setValue("rooms_number", data.rooms_number);
+        setValue("square_meters", data.square_meters);
+        setValue("description", data.description);
       });
-      
     }
+  }, []);
+
+  const onSubmit: SubmitHandler<ResidenceForm> = (data) => {
+    console.log(data);
+    setLoading(true);
+    const newResidence = convertToResidence("1", data);
+    newResidence.id = residence_id;
+    Api.editResidence(newResidence).then(() => {
+      setLoading(false);
+      navigate("/residences");
+    });
   };
   return loading ? (
     <div role="status" className="flex h-64 justify-center items-center">
@@ -50,39 +60,38 @@ function AddListing() {
     </div>
   ) : (
     <div className="flex flex-col items-center ">
-      <h1 className="pt-8 pb-8 text-3xl font-bold">Add listing</h1>
+      <h1 className="pt-8 pb-8 text-3xl font-bold">Edit your residence</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col items-center bg-white rounded-2xl p-16"
       >
         <input
-          type="number"
-          {...register("price")}
+          {...register("city", { required: true, pattern: /^[A-Za-z]+$/i })}
           className="mb-4 p-2 rounded border border-gray-500"
-          placeholder="Price"
+          placeholder="City"
         />
         <input
-          type="date"
-          {...register("fix_deadline")}
-          className="mb-4 p-2 w-full rounded border border-gray-500"
-          placeholder="Fix deadline"
+          {...register("street", { required: true, pattern: /^[A-Za-z]+$/i })}
+          className="mb-4 p-2 rounded border border-gray-500"
+          placeholder="Street"
         />
-        <select
-          className="mb-4 p-2 w-full rounded border border-gray-500"
-          {...register("issue_type")}
-        >
-          <option value={IssueType.waterLeakage}>
-            {IssueType.waterLeakage}
-          </option>
-          <option value={IssueType.electrical}>{IssueType.electrical}</option>
-          <option value={IssueType.windowRepair}>
-            {IssueType.windowRepair}
-          </option>
-          <option value={IssueType.other}>{IssueType.other}</option>
-        </select>
-
         <input
-          {...register("description", {})}
+          type="number"
+          {...register("rooms_number", {})}
+          className="mb-4 p-2 rounded border border-gray-500"
+          placeholder="Rooms"
+        />
+        <input
+          type="number"
+          {...register("square_meters", {})}
+          className="mb-4 p-2 rounded border border-gray-500"
+          placeholder="Square meters"
+        />
+        <input
+          {...register("description", {
+            required: true,
+            pattern: /^[A-Za-z]+$/i,
+          })}
           className="mb-4 p-2 rounded border border-gray-500"
           placeholder="Description"
         />
@@ -95,4 +104,4 @@ function AddListing() {
   );
 }
 
-export default AddListing;
+export default EditResidence;

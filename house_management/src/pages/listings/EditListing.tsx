@@ -1,33 +1,48 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useState } from "react";
+import { Api } from "../../api/api";
+import { useEffect, useState } from "react";
+import {
+    convertToListing,
+} from "../../utils/formConverter";
 import { useNavigate, useParams } from "react-router-dom";
 import { IssueType } from "../../constants/enums/IssueType";
-import { Api } from "../../api/api";
-import { convertToListing } from "../../utils/formConverter";
 
-function AddListing() {
-  const { register, handleSubmit } = useForm<ListingForm>();
+
+
+function EditListing() {
+  const { residence_id } = useParams();
+  const { listing_id } = useParams();
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const { id } = useParams();
+  const { register, handleSubmit, setValue } = useForm<ListingForm>({});
 
-  console.log(id);
+  useEffect(() => {
+    if (residence_id !== undefined && listing_id !== undefined) {
+      Api.getListing(residence_id, listing_id).then((data) => {
+        setValue("price", data.price);
+        setValue("fix_deadline", data.fix_deadline);
+        setValue("issue_type", data.issue_type);
+        setValue("description", data.description);
+      });
+    }
+  }, []);
 
   const onSubmit: SubmitHandler<ListingForm> = (data) => {
     console.log(data);
-
-    console.log(convertToListing("1", data))
-
-    if (id !== undefined) {
-      setLoading(true);
-      Api.postListing(id, convertToListing("1", data)).then(() => {
-        setLoading(false);
-        navigate("/listings");
-      });
-      
-    }
+    setLoading(true);
+    if(residence_id !== undefined){
+    const newListing = convertToListing("1", data);
+    newListing.id = listing_id;
+    console.log(newListing)
+    Api.editListing(residence_id, newListing).then(() => {
+      setLoading(false);
+      navigate("/listings");
+    });
+}
   };
+
   return loading ? (
     <div role="status" className="flex h-64 justify-center items-center">
       <svg
@@ -50,7 +65,7 @@ function AddListing() {
     </div>
   ) : (
     <div className="flex flex-col items-center ">
-      <h1 className="pt-8 pb-8 text-3xl font-bold">Add listing</h1>
+      <h1 className="pt-8 pb-8 text-3xl font-bold">Edit listing</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col items-center bg-white rounded-2xl p-16"
@@ -95,4 +110,4 @@ function AddListing() {
   );
 }
 
-export default AddListing;
+export default EditListing;

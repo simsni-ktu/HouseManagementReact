@@ -5,9 +5,11 @@ enum issueType {
   other = "other",
 }
 interface Listing {
-  user_id: string;
-  price: string;
-  fix_deadline: Date;
-  issue_type: issueType;
-  description: string;
+  id?: string
+  //residence_id?: string prohibited
+  user_id: string
+  price: string
+  fix_deadline: Date
+  issue_type: issueType
+  description: string
 }

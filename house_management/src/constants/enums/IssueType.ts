@@ -1,6 +1,6 @@
 export enum IssueType {
     waterLeakage = "water leakage",
     electrical = "electrical",
-    windowRepair = "windows repair",
+    windowRepair = "window repair",
     other = "other"
 }

@@ -17,7 +17,7 @@ function Residence() {
 
   return residence === undefined ? (
     <>
-      <p>{id}</p>
+      
     </>
   ) : (
     <div className="flex justify-center pt-32 ">
